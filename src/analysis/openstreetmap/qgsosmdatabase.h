@@ -58,6 +58,8 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
     QString errorString() const { return mError; }
 
+    QString getOSMDumpFile() const;
+
     // data access
 
     int countNodes() const;

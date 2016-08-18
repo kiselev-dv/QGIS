@@ -105,6 +105,8 @@ bool QgsOSMXmlImport::import()
   return true;
 }
 
+bool QgsOSMXmlImport::writeMeta()
+
 bool QgsOSMXmlImport::createIndexes()
 {
   // index on tags for faster access
@@ -160,6 +162,7 @@ bool QgsOSMXmlImport::createDatabase()
     "CREATE TABLE ways ( id INTEGER PRIMARY KEY )",
     "CREATE TABLE ways_nodes ( way_id INTEGER, node_id INTEGER, way_pos INTEGER )",
     "CREATE TABLE ways_tags ( id INTEGER, k TEXT, v TEXT )",
+    "CREATE TABLE meta_imports (path TEXT)"
   };
 
   int initCount = sizeof( sqlInitStatements ) / sizeof( const char* );
@@ -174,6 +177,16 @@ bool QgsOSMXmlImport::createDatabase()
       closeDatabase();
       return false;
     }
+  }
+
+  char *zErrMsg = 0;
+  QString importMetaSQL = QString("INSERT INTO meta_imports VALUES('%1');")
+    .arg(quotedIdentifier(mXmlFileName));
+
+  error = sqlite3_exec(db, importMetaSQL.toUtf8().constData(), NULL, 0, &zErrMsg);
+  if ( error )
+  {
+    sqlite3_close(db);
   }
 
   const char* sqlInsertStatements[] =

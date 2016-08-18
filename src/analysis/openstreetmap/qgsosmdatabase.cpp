@@ -290,6 +290,20 @@ bool QgsOSMDatabase::prepareStatements()
   return true;
 }
 
+
+QString QgsOSMDatabase::getOSMDumpFile()
+{
+    sqlite3_stmt    *res;
+
+    sqlite3_prepare_v2( mDatabase, "SELECT path FROM meta_imports", -1, &res, nullptr);
+    if (sqlite3_step(res) == SQLITE_ROW)
+    {
+        return QString(sqlite3_column_text(res, 0));
+    }
+    return QString("");
+}
+
+
 bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName,
                                        const QStringList& tagKeys,
                                        const QStringList& notNullTagKeys )

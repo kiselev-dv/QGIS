@@ -172,6 +172,9 @@ void QgsOSMExportDialog::onOK()
     QgsDataSourceUri uri;
     uri.setDatabase( editDbFileName->text() );
     uri.setDataSource( QString(), editLayerName->text(), "geometry" );
+    uri.setParam(QString("osm_dumpfile"), mDatabase->getOSMDumpFile());
+    uri.setParam(QString("osm_fields"), tagKeys.join(","));
+    uri.setParam(QString("osm_nnfields"), notNullTagKeys.join(","));
     QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), "spatialite" );
     if ( vlayer->isValid() )
       QgsMapLayerRegistry::instance()->addMapLayer( vlayer );
