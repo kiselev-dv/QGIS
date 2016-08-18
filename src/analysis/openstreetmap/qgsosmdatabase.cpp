@@ -291,14 +291,14 @@ bool QgsOSMDatabase::prepareStatements()
 }
 
 
-QString QgsOSMDatabase::getOSMDumpFile()
+QString QgsOSMDatabase::getOSMDumpFile() const
 {
     sqlite3_stmt    *res;
 
     sqlite3_prepare_v2( mDatabase, "SELECT path FROM meta_imports", -1, &res, nullptr);
     if (sqlite3_step(res) == SQLITE_ROW)
     {
-        return QString(sqlite3_column_text(res, 0));
+        return QString::fromUtf8(( const char* ) sqlite3_column_text(res, 0));
     }
     return QString("");
 }

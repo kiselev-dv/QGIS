@@ -105,8 +105,6 @@ bool QgsOSMXmlImport::import()
   return true;
 }
 
-bool QgsOSMXmlImport::writeMeta()
-
 bool QgsOSMXmlImport::createIndexes()
 {
   // index on tags for faster access
@@ -181,12 +179,12 @@ bool QgsOSMXmlImport::createDatabase()
 
   char *zErrMsg = 0;
   QString importMetaSQL = QString("INSERT INTO meta_imports VALUES('%1');")
-    .arg(quotedIdentifier(mXmlFileName));
+    .arg(mXmlFileName);
 
-  error = sqlite3_exec(db, importMetaSQL.toUtf8().constData(), NULL, 0, &zErrMsg);
+  int error = sqlite3_exec(mDatabase, importMetaSQL.toUtf8().constData(), NULL, 0, &zErrMsg);
   if ( error )
   {
-    sqlite3_close(db);
+    sqlite3_close(mDatabase);
   }
 
   const char* sqlInsertStatements[] =
