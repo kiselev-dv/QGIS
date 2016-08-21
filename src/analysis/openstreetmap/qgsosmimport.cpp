@@ -160,7 +160,8 @@ bool QgsOSMXmlImport::createDatabase()
     "CREATE TABLE ways ( id INTEGER PRIMARY KEY )",
     "CREATE TABLE ways_nodes ( way_id INTEGER, node_id INTEGER, way_pos INTEGER )",
     "CREATE TABLE ways_tags ( id INTEGER, k TEXT, v TEXT )",
-    "CREATE TABLE meta_imports (path TEXT)"
+    "CREATE TABLE meta_imports (path TEXT)",
+    "CREATE TABLE meta_exports (layer TEXT, geom_type TEXT, tags TEXT, not_null_tags TEXT)",
   };
 
   int initCount = sizeof( sqlInitStatements ) / sizeof( const char* );

@@ -172,7 +172,7 @@ void QgsOSMExportDialog::onOK()
     QgsDataSourceUri uri;
     uri.setDatabase( editDbFileName->text() );
     uri.setDataSource( QString(), editLayerName->text(), "geometry" );
-    uri.setParam(QString("osm_dumpfile"), mDatabase->getOSMDumpFile());
+    //uri.setParam(QString("osm_dumpfile"), QString(mDatabase->getOSMDumpFile()));
     uri.setParam(QString("osm_fields"), tagKeys);
     uri.setParam(QString("osm_nnfields"), notNullTagKeys);
 

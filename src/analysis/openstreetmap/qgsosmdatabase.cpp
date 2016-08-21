@@ -322,7 +322,6 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
     return false;
 
   // import data
-
   int retX = sqlite3_exec( mDatabase, "BEGIN", nullptr, nullptr, nullptr );
   Q_ASSERT( retX == SQLITE_OK );
   Q_UNUSED( retX );
@@ -340,6 +339,18 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
 
   if ( !createSpatialIndex( tableName ) )
     return false;
+
+  QString insert_meta_sql = QString("INSERT INTO meta_exports VALUES(%1, '%2', '%3', '%4');");
+  insert_meta_sql = insert_meta_sql.arg(quotedValue(tableName), geometryType, tagKeys.join(","), notNullTagKeys.join(","));
+  char *errMsg = nullptr;
+  int ret = sqlite3_exec( mDatabase, insert_meta_sql.toUtf8().constData(), nullptr, nullptr,  &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    mError = "Unable write export metadata:\n" + QString::fromUtf8( errMsg ) + "\nQuery: " + insert_meta_sql;
+    sqlite3_free( errMsg );
+
+    return false;
+  }
 
   return mError.isEmpty();
 }
