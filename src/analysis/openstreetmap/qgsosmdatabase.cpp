@@ -175,6 +175,29 @@ QgsOSMTags QgsOSMDatabase::tags( bool way, QgsOSMId id ) const
   return t;
 }
 
+QList<QgsOSMEportedLayer> QgsOSMDatabase::exportedLayers() const
+{
+    QList<QgsOSMEportedLayer> result;
+    QString sql = QString( "SELECT layer, geom_type, tags, not_null_tags FROM meta_exports" );
+
+    sqlite3_stmt* stmt;
+    if ( sqlite3_prepare_v2( mDatabase, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
+      return result;
+
+    while ( sqlite3_step( stmt ) == SQLITE_ROW )
+    {
+      QString layer = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 0 ) );
+      QString type = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 1 ) );
+      QString stags = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 2 ) );
+      QString snntags = QString::fromUtf8(( const char* ) sqlite3_column_text( stmt, 3 ) );
+
+      result.append(QgsOSMEportedLayer(layer, type, stags.split(QString(",")), snntags.split(QString(","))));
+    }
+
+    sqlite3_finalize( stmt );
+
+    return result;
+}
 
 QList<QgsOSMTagCountPair> QgsOSMDatabase::usedTags( bool ways ) const
 {
@@ -196,8 +219,6 @@ QList<QgsOSMTagCountPair> QgsOSMDatabase::usedTags( bool ways ) const
   sqlite3_finalize( stmt );
   return pairs;
 }
-
-
 
 QgsOSMWay QgsOSMDatabase::way( QgsOSMId id ) const
 {

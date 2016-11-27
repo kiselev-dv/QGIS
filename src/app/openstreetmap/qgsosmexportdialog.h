@@ -38,6 +38,7 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
     void onBrowse();
     void updateLayerName();
     void onLoadTags();
+    void onLoadLayers();
     void onSelectAll();
     void onUnselectAll();
 
@@ -47,6 +48,7 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
   private:
     QgsOSMDatabase* mDatabase;
     QStandardItemModel* mTagsModel;
+    QStandardItemModel* mLayersModel;
 };
 
 #endif // QGSOSMEXPORTDIALOG_H

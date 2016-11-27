@@ -20,6 +20,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 #include <QApplication>
 #include <QFileDialog>
@@ -41,12 +42,18 @@ QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
   connect( radPolylines, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
   connect( radPolygons, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
   connect( btnLoadTags, SIGNAL( clicked() ), this, SLOT( onLoadTags() ) );
+  connect( btnLoadLayers, SIGNAL( clicked() ), this, SLOT( onLoadLayers() ) );
   connect( btnSelectAll, SIGNAL( clicked() ), this, SLOT( onSelectAll() ) );
   connect( btnUnselectAll, SIGNAL( clicked() ), this, SLOT( onUnselectAll() ) );
 
   mTagsModel = new QStandardItemModel( this );
   mTagsModel->setHorizontalHeaderLabels( QStringList() << tr( "Tag" ) << tr( "Count" ) << tr( "Not null" ) );
   viewTags->setModel( mTagsModel );
+
+  mLayersModel = new QStandardItemModel( this );
+  mLayersModel->setHorizontalHeaderLabels(
+              QStringList() << tr( "Name" ) << tr( "Project" ) << tr( "Action" ) << tr( "DB" ) );
+  viewLayers->setModel( mLayersModel );
 }
 
 QgsOSMExportDialog::~QgsOSMExportDialog()
@@ -96,6 +103,34 @@ bool QgsOSMExportDialog::openDatabase()
   return true;
 }
 
+void QgsOSMExportDialog::onLoadLayers() {
+  if ( !openDatabase() )
+    return;
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QList<QgsOSMEportedLayer> dbLayers = mDatabase->exportedLayers();
+  mDatabase->close();
+  mLayersModel->setColumnCount( 1 );
+  mLayersModel->setColumnCount( dbLayers.count() );
+
+  QList<QgsMapLayer*> projectLayers = QgsMapLayerRegistry::instance()->mapLayers().values();
+  QMessageBox::information( this, QString(), tr( "Layers length: %1" ).arg( projectLayers.size() ) );
+
+  for ( int i = 0; i < dbLayers.count(); ++i )
+  {
+    const QgsOSMEportedLayer& l = dbLayers[i];
+    QStandardItem* item = new QStandardItem( l.name() );
+    //item->setCheckable( true );
+    item->setData( l.name() + " (" + l.type() + ")", Qt::DisplayRole );
+    mLayersModel->setItem( i, 0, item );
+  }
+
+  viewLayers->resizeColumnToContents( 0 );
+  viewLayers->sortByColumn( 1, Qt::DescendingOrder );
+
+  QApplication::restoreOverrideCursor();
+  mDatabase->close();
+}
 
 void QgsOSMExportDialog::onLoadTags()
 {

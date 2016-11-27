@@ -42,7 +42,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="btnLoadLayers">
           <property name="text">
            <string>Load from DB</string>
           </property>
@@ -62,7 +62,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="btnApplyLayersChanages">
           <property name="text">
            <string>Apply</string>
           </property>
@@ -71,7 +71,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QTreeView" name="treeView"/>
+       <widget class="QTreeView" name="viewLayers"/>
       </item>
      </layout>
     </widget>

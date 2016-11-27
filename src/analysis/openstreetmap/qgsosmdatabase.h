@@ -82,6 +82,8 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
     QgsPolyline wayPoints( QgsOSMId id ) const;
 
+    QList<QgsOSMEportedLayer> exportedLayers() const;
+
     // export to spatialite
 
     enum ExportType { Point, Polyline, Polygon };

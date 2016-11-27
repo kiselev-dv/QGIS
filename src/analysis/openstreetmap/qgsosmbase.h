@@ -143,4 +143,23 @@ class ANALYSIS_EXPORT QgsOSMTags
     QMap<QString, QString> mMap;
 };
 
+class ANALYSIS_EXPORT QgsOSMEportedLayer
+{
+  public:
+    QgsOSMEportedLayer() {}
+    QgsOSMEportedLayer(const QString& name, const QString& type, const QList<QString>& tags, const QList<QString>& notNullTags)
+        : _name(name), _type(type), _tags(tags), _notNullTags(notNullTags) {}
+
+    QString name() const { return _name; }
+    QString type() const { return _type; }
+    QList<QString> tags() const { return _tags; }
+    QList<QString> notNullTags() const { return _notNullTags; }
+
+  private:
+    QString _name;
+    QString _type;
+    QList<QString> _tags;
+    QList<QString> _notNullTags;
+};
+
 #endif // OSMBASE_H
